@@ -34,7 +34,7 @@ Toolkit.run(async (tools) => {
 
   console.log(`Current version is ${pkg.version}`);
 
-  const pkgMain = await execSync(`git show origin/main:package.json`);
+  const pkgMain = JSON.parse(await execSync(`git show origin/main:package.json`));
   const mainVersion = pkgMain.version;
   console.log(`Main version ${mainVersion}`);
 

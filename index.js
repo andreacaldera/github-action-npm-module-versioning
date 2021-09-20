@@ -42,7 +42,8 @@ Toolkit.run(async (tools) => {
     console.log(`${releaseType} release`);
     await runCommand(`yarn version --${releaseType} --no-git-tag-version`);
     await runCommand(`git add package.json`);
-    await runCommand(`git commit -m 'ci: v${tools.getPackageJSON().version}'`);
+    const newVersion = JSON.parse(fs.readFileSync('package.json')).version;
+    await runCommand(`git commit -m 'ci: v${newVersion}'`);
     await runCommand(`git push origin ${currentBranch}`);
   };
 

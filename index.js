@@ -1,6 +1,5 @@
 const { Toolkit } = require('actions-toolkit');
 const { execSync } = require('child_process');
-const compareVersions = require('compare-versions');
 
 const fs = require('fs');
 

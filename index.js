@@ -1,5 +1,7 @@
 const { Toolkit } = require('actions-toolkit');
 const { execSync } = require('child_process');
+const compareVersions = require('compare-versions');
+
 const fs = require('fs');
 
 if (process.env.PACKAGEJSON_DIR) {
@@ -37,10 +39,13 @@ Toolkit.run(async (tools) => {
   const tags = tagsResults
     .toString()
     .split(/\r?\n/)
-    .map((s) => s.trim())
+    // todo ignore tags which are not version releases
+    .map((s) => s.trim().replace('v', ''))
     .filter(Boolean);
 
-  const latestTag = tags.reduce((acc, item) => (acc >= item ? acc : item), tags[0]);
+  const latestTag = tags.reduce((acc, item) => {
+    return compareVersion(acc, item) ? acc : item;
+  }, tags[0]);
   console.log(`Latest tag ${latestTag}`);
 
   const bumpVersion = async (releaseType) => {

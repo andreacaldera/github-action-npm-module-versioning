@@ -44,7 +44,7 @@ Toolkit.run(async (tools) => {
     .filter(Boolean);
 
   const latestTag = tags.reduce((acc, item) => {
-    return compareVersion(acc, item) ? acc : item;
+    return compareVersions(acc, item) ? acc : item;
   }, tags[0]);
   console.log(`Latest tag ${latestTag}`);
 

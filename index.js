@@ -51,7 +51,6 @@ Toolkit.run(async (tools) => {
   const bumpVersion = async (releaseType) => {
     console.log(`${releaseType} release`);
     await runCommand(`yarn version --${releaseType}`);
-    await runCommand(`git pull -r origin ${currentBranch}`);
     await runCommand(`git push origin ${currentBranch}`);
   };
 

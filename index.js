@@ -35,26 +35,19 @@ Toolkit.run(async (tools) => {
 
   console.log(`Current version is ${pkg.version}`);
 
-  const tagsResults = await execSync(`git tag -l`);
-  const tags = tagsResults
-    .toString()
-    .split(/\r?\n/)
-    // todo ignore tags which are not version releases
-    .map((s) => s.trim().replace('v', ''))
-    .filter(Boolean);
-
-  const latestTag = tags.reduce((acc, item) => {
-    return compareVersions(acc, item) ? acc : item;
-  }, tags[0]);
-  console.log(`Latest tag ${latestTag}`);
+  await execSync(`git show HEAD:package.json > package.json.main`);
+  const pkgMain = fs.readFileSync('package.json.main');
+  const mainVersion = pkgMain.version;
+  console.log(`Main version ${mainVersion}`);
+  await execSync(`rm package.json.main`);
 
   const bumpVersion = async (releaseType) => {
     console.log(`${releaseType} release`);
-    await runCommand(`yarn version --${releaseType}`);
+    await runCommand(`yarn version --${releaseType} --no-git-tag-version`);
     await runCommand(`git push origin ${currentBranch}`);
   };
 
-  fs.writeFileSync('package.json', JSON.stringify({ ...pkg, version: latestTag }, null, 2));
+  fs.writeFileSync('package.json', JSON.stringify({ ...pkg, version: mainVersion }, null, 2));
   const currentBranch = /refs\/[a-zA-Z]+\/(.*)/.exec(process.env.GITHUB_REF)[1];
   const commits = await runCommand(`git log origin/main...${currentBranch} --oneline`);
   if (commits.includes('major')) {

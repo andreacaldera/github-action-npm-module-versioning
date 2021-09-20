@@ -34,11 +34,9 @@ Toolkit.run(async (tools) => {
 
   console.log(`Current version is ${pkg.version}`);
 
-  await execSync(`git show HEAD:package.json > package.json.main`);
-  const pkgMain = fs.readFileSync('package.json.main');
+  const pkgMain = await execSync(`git show origin/main:package.json`);
   const mainVersion = pkgMain.version;
   console.log(`Main version ${mainVersion}`);
-  await execSync(`rm package.json.main`);
 
   const bumpVersion = async (releaseType) => {
     console.log(`${releaseType} release`);
